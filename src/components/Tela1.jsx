@@ -8,6 +8,7 @@ const Tela1 = ({ navigation }) => {
   };
 
   return (
+    
     <View style={styles.container}>
       <Text style={styles.title}>Bem-Vindo ao Aplicativo de Conversão</Text>
       <TouchableOpacity style={styles.button} onPress={handleConvertPress}>

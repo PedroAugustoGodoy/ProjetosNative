@@ -1,34 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 const Tela3 = ({ navigation, route }) => {
-  const [valorKm, setValorKm] = useState(0);
-  const [valorMilha, setValorMilha] = useState(0);
+  const [valorEntrada, setValorEntrada] = useState('');
+  const [resultado, setResultado] = useState('');
 
-  useEffect(() => {
-    // Obtenha o valor em Km passado como parâmetro da Tela2
-    const km = route.params?.valorKm || 0;
+  const calcularConversao = () => {
+    const tipoConversao = route.params?.tipoConversao;
+    const valor = parseFloat(valorEntrada);
 
-    // Realize a conversão de milhas para quilômetros (1 Milha = 1.60934 Km)
-    const milha = km / 1.60934;
-
-    // Atualize os estados com os valores
-    setValorKm(km);
-    setValorMilha(milha);
-  }, [route.params?.valorKm]);
-
-  const handleConverterNovamentePress = () => {
-    // Navegar de volta para a Tela2
-    navigation.navigate('Tela2');
+    switch (tipoConversao) {
+      case 'KmParaMilha':
+        setResultado((valor * 0.621371).toFixed(2) + ' Milhas');
+        break;
+      case 'MilhaParaKm':
+        setResultado((valor / 0.621371).toFixed(2) + ' Quilômetros');
+        break;
+      case 'CelsiusParaFahrenheit':
+        setResultado(((valor * 9/5) + 32).toFixed(2) + ' Fahrenheit');
+        break;
+      case 'FahrenheitParaCelsius':
+        setResultado(((valor - 32) * 5/9).toFixed(2) + ' Celsius');
+        break;
+      default:
+        setResultado('Selecione uma opção de conversão válida');
+        break;
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Resultado da Conversão</Text>
-      <Text style={styles.result}>
-        {`${valorMilha.toFixed(2)} Milhas equivalem a ${valorKm.toFixed(2)} Km`}
-      </Text>
-      <Button title="Fazer novamente" onPress={handleConverterNovamentePress} />
+      <Text style={styles.title}>Conversão Selecionada</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Insira o valor"
+        onChangeText={(text) => setValorEntrada(text)}
+        value={valorEntrada}
+        keyboardType="numeric"
+      />
+      <Button title="Calcular" onPress={calcularConversao} />
+      <Text style={styles.result}>{resultado}</Text>
+      <Button title="Retornar" onPress={() => navigation.navigate('Tela2')} />
     </View>
   );
 };
@@ -46,9 +58,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#000000', // Texto preto
   },
+  input: {
+    width: '80%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#000000', // Borda preta
+    borderRadius: 5,
+    marginBottom: 10,
+    fontSize: 16,
+  },
   result: {
     fontSize: 18,
-    marginBottom: 20,
+    marginTop: 20,
     color: '#000000', // Texto preto
   },
 });
